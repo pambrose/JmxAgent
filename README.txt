@@ -3,13 +3,13 @@ keytool -genkey -keyalg RSA -keysize 1024 -dname "CN=com.sudothought.jmx" -keyst
 
 # To start test server:
 java -cp ./JmxAgent.jar \
--Djmx.agent.port=3434 \
 -javaagent:./JmxAgent.jar \
+-Djmx.agent.port=3434 \
+-Djava.rmi.server.hostname=foo.com \
 -Djavax.net.ssl.keyStore=./ssl/jmx-agent.jks \
 -Djavax.net.ssl.keyStorePassword=secret \
 -Djavax.net.ssl.trustStore=./ssl/jmx-agent.jks \
 -Djavax.net.ssl.trustStorePassword=secret \
--Djava.rmi.server.hostname=foo.com \
 com.sudothought.jmx.TestServer
 
 # To connect with test client

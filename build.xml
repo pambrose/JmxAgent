@@ -1,0 +1,28 @@
+<project name="SSL Agent for JMX" default="all">
+
+    <property name="sources" value="./src"/>
+    <property name="output.dir" value="./output"/>
+    <property name="jarfile" value="${output.dir}/JmxAgent.jar"/>
+
+    <target name="clean.module" description="cleanup module">
+        <delete dir="${output.dir}"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="${output.dir}"/>
+        <javac srcdir="${sources}" destdir="${output.dir}"/>
+    </target>
+
+    <target name="build-jar">
+        <jar basedir="${output.dir}" jarfile="${jarfile}">
+            <manifest>
+                <attribute name="Premain-Class" value="com.sudothought.jmx.JmxAgent"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="clean" depends="clean.module" description="cleanup a;;"/>
+
+    <target name="all" depends="clean, compile, build-jar" description="build all"/>
+
+</project>

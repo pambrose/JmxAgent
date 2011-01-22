@@ -12,6 +12,8 @@ java -cp ./JmxAgent.jar \
 -Djavax.net.ssl.trustStorePassword=secret \
 com.sudothought.jmx.TestServer
 
+# The -Djava.rmi.server.hostname option is needed only with NAT
+
 # To connect with test client
 java -cp ./JmxAgent.jar \
 -Djavax.net.ssl.trustStore=./ssl/jmx-agent.jks \

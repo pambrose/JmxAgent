@@ -2,7 +2,7 @@
 
     <property name="sources" value="./src"/>
     <property name="output.dir" value="./output"/>
-    <property name="jarfile" value="${output.dir}/JmxAgent.jar"/>
+    <property name="jarfile" value="./JmxAgent.jar"/>
 
     <target name="clean.module" description="cleanup module">
         <delete dir="${output.dir}"/>

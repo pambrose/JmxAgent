@@ -9,7 +9,7 @@ java -cp ./JmxAgent.jar \
 -Djavax.net.ssl.keyStorePassword=secret \
 -Djavax.net.ssl.trustStore=./ssl/jmx-agent.jks \
 -Djavax.net.ssl.trustStorePassword=secret \
--Djava.rmi.server.hostname=name.com \
+-Djava.rmi.server.hostname=foo.com \
 com.sudothought.jmx.TestServer
 
 # To connect with test client
@@ -17,13 +17,13 @@ java -cp ./JmxAgent.jar \
 -Djavax.net.ssl.trustStore=./ssl/jmx-agent.jks \
 -Djavax.net.ssl.trustStorePassword=secret \
 com.sudothought.jmx.TestClient \
- -url:service:jmx:rmi://name.com:3434/jndi/rmi://name.com:3434/jmxrmi
+ -url:service:jmx:rmi://foo.com:3434/jndi/rmi://foo.com:3434/jmxrmi
 
 # To connect with jconsole
 jconsole \
 -J-Djavax.net.ssl.trustStore=./ssl/jmx-agent.jks \
 -J-Djavax.net.ssl.trustStorePassword=secret \
-localhost:3434
+foo.com:3434
 
 # For more details, see:
 http://download.oracle.com/javase/6/docs/technotes/guides/security/jsse/JSSERefGuide.html#CreateKeystore

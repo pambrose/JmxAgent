@@ -290,9 +290,7 @@ public class Attach {
         syntaxError(args, 0);
     }
 
-    private final static String SYNTAX =
-            Attach.class.getSimpleName() +
-            " {start <pid> | stop | status | list | help}";
+    private final static String SYNTAX = Attach.class.getSimpleName() + " {start <pid> | stop | status | list | help}";
 
     private static void syntaxError(String[] args, int i) {
         String msg;

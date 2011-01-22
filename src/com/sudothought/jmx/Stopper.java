@@ -71,8 +71,7 @@ import java.rmi.server.UnicastRemoteObject;
  */
 public class Stopper {
 
-    public static String STOPPER_PROPERTY =
-            Stopper.class.getPackage().getName() + ".stopper";
+    public static String STOPPER_PROPERTY = "jmx.agent.stopper";
     public static String STOPPER_NAME     = "Stopper";
     public static String STOP             = "stop";
 
@@ -102,36 +101,34 @@ public class Stopper {
      * @param registry  the registry to unexport.
      * @return
      */
-    public static MBeanServerForwarder createForwarderFor(
-            final JMXConnectorServer connector,
-            final Registry registry) {
-        final InvokeOperationInterceptor interceptor =
-                new InvokeOperationInterceptor(getDefaultStopperName(), STOP) {
+    public static MBeanServerForwarder createForwarderFor(final JMXConnectorServer connector, final Registry registry) {
 
-                    @Override
-                    public Object intercept(MBeanServer server, ObjectName mbean,
-                                            String invoke, Object[] args, String[] signature)
-                            throws Exception {
+        final InvokeOperationInterceptor interceptor = new InvokeOperationInterceptor(getDefaultStopperName(), STOP) {
 
-                        // stop the connector.
-                        //
-                        connector.stop();
+            @Override
+            public Object intercept(MBeanServer server, ObjectName mbean,
+                                    String invoke, Object[] args, String[] signature)
+                    throws Exception {
 
-                        // need to unexport the registry if we want to recreate
-                        // it later...
-                        //
-                        if (registry != null)
-                            UnicastRemoteObject.unexportObject(registry, false);
-                        System.out.println("Server stopped");
-                        return null;
-                    }
+                // stop the connector.
+                //
+                connector.stop();
 
-                    @Override
-                    public ClassLoader getClassLoaderFor(MBeanServer server,
-                                                         ObjectName mbean) {
-                        return null;
-                    }
-                };
+                // need to unexport the registry if we want to recreate
+                // it later...
+                //
+                if (registry != null)
+                    UnicastRemoteObject.unexportObject(registry, false);
+                System.out.println("Server stopped");
+                return null;
+            }
+
+            @Override
+            public ClassLoader getClassLoaderFor(MBeanServer server,
+                                                 ObjectName mbean) {
+                return null;
+            }
+        };
         return ForwardingInterceptor.newForwardingInterceptor(interceptor);
     }
 
@@ -145,10 +142,7 @@ public class Stopper {
         final String stopperName =
                 System.getProperty(STOPPER_PROPERTY, STOPPER_NAME);
         try {
-            final ObjectName name = ObjectName.getInstance(
-                    "JMImplementation:type=JMXConnectorStopper,name=" +
-                    stopperName);
-            return name;
+            return ObjectName.getInstance("JMImplementation:type=JMXConnectorStopper,name=" + stopperName);
         }
         catch (MalformedObjectNameException x) {
             throw new IllegalArgumentException(stopperName, x);

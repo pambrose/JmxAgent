@@ -57,27 +57,27 @@ import java.util.List;
  * @author dfuchs
  */
 public class StoppableAgent {
-    public static final String PORT_PROPERTY = "example.rmi.agent.port";
+
+    public static final String PORT_PROPERTY = "jmx.agent.port";
     public static final String DEFAULT_PORT  = "3412";
 
     private StoppableAgent() {
     }
 
     public static int getServerPort() {
-        final int port = Integer.parseInt(
-                System.getProperty(PORT_PROPERTY, DEFAULT_PORT));
+        final int port = Integer.parseInt(System.getProperty(PORT_PROPERTY, DEFAULT_PORT));
         return port;
     }
 
-    public static void agentmain(String agentArgs)
-            throws IOException, MalformedObjectNameException {
-        String[] args = agentArgs.split(";");
+    public static void agentmain(String agentArgs) throws IOException, MalformedObjectNameException {
+
+        final String[] args = agentArgs.split(";");
         final List<String> ssl = Arrays.asList(Attach.SSL_PROPERTIES);
         for (String s : args) {
             final int eg = s.indexOf("=");
             if (eg < 0) throw new IllegalArgumentException(s);
-            String pn = s.substring(0, eg);
-            String pv = s.substring(eg + 1);
+            final String pn = s.substring(0, eg);
+            final String pv = s.substring(eg + 1);
             if (!ssl.contains(pn)) {
                 System.setProperty(pn, pv);
             }
@@ -92,8 +92,7 @@ public class StoppableAgent {
         premain(agentArgs);
     }
 
-    public static void premain(String agentArgs)
-            throws IOException, MalformedObjectNameException {
+    public static void premain(String agentArgs) throws IOException, MalformedObjectNameException {
 
         // Ensure cryptographically strong random number generator used
         // to choose the object number - see java.rmi.server.ObjID
@@ -128,9 +127,7 @@ public class StoppableAgent {
 
         // Retrieve the PlatformMBeanServer.
         //
-        System.out.println("Get the platform's MBean server");
-        final MBeanServer mbs =
-                ManagementFactory.getPlatformMBeanServer();
+        final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
 
         // Environment map.
         //
@@ -141,16 +138,13 @@ public class StoppableAgent {
         // everywhere!
         //
         // For the client side (remote)
-        //
         env.put(RMIConnectorServer.RMI_CLIENT_SOCKET_FACTORY_ATTRIBUTE, csf);
 
         // For the server side (local)
-        //
         env.put(RMIConnectorServer.RMI_SERVER_SOCKET_FACTORY_ATTRIBUTE, ssf);
 
         // For binding the JMX RMI Connector Server with the registry
         // created above:
-        //
         env.put("com.sun.jndi.rmi.factory.socket", csf);
 
         // Create an RMI connector server.
@@ -167,26 +161,24 @@ public class StoppableAgent {
         // The port for the RMI registry is specified in the second part
         // of the URL, in "rmi://"+hostname+":"+port
         //
-        System.out.println("Create an RMI connector server");
+        //System.out.println("Create an RMI connector server");
         final String hostname = InetAddress.getLocalHost().getHostName();
-        JMXServiceURL url =
-                new JMXServiceURL("service:jmx:rmi://" + hostname +
-                                  ":" + port + "/jndi/rmi://" + hostname + ":" + port + "/jmxrmi");
+        JMXServiceURL url = new JMXServiceURL("service:jmx:rmi://" + hostname +
+                                              ":" + port + "/jndi/rmi://" + hostname + ":" + port + "/jmxrmi");
 
         System.out.println("creating server with URL: " + url);
 
         // Now create the server from the JMXServiceURL
         //
-        final JMXConnectorServer cs =
-                JMXConnectorServerFactory.newJMXConnectorServer(url, env, mbs);
+        final JMXConnectorServer cs = JMXConnectorServerFactory.newJMXConnectorServer(url, env, mbs);
         cs.setMBeanServerForwarder(Stopper.createForwarderFor(cs, registry));
-        System.out.println("Stopper ready for: " +
-                           Stopper.getDefaultStopperName());
+
+        System.out.println("Stopper ready for: " + Stopper.getDefaultStopperName());
 
         // Start the RMI connector server.
         //
-        System.out.println("Start the RMI connector server on port " + port);
+        System.out.println("RMI connector starting on port: " + port);
         cs.start();
-        System.out.println("Server started at: " + cs.getAddress());
+        System.out.println("Proxy started at: " + cs.getAddress());
     }
 }

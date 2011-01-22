@@ -115,8 +115,7 @@ public class InvokeOperationInterceptor {
      * @throws java.lang.Exception invoking the operation failed.
      */
     public Object intercept(MBeanServer server, ObjectName mbean,
-                            String invoke, Object[] args, String[] signature)
-            throws Exception {
+                            String invoke, Object[] args, String[] signature) throws Exception {
         return server.invoke(mbean, invoke, args, signature);
     }
 

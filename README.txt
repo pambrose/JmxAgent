@@ -30,7 +30,7 @@ jconsole \
 foo.com:3434
 
 
-# For stoppable agent
+# For start/stop agent
 =====================================
 
 # To start the test server

@@ -30,7 +30,7 @@ jconsole \
 foo.com:3434
 
 
-# For start/stop agent
+# For stoppable agent
 =====================================
 
 # To start the test server
@@ -42,10 +42,10 @@ java -cp ./JmxStoppableAgent.jar \
 com.sudothought.jmx.TestServer
 
 # To attach
-java  -cp ./JmxStoppableAgent.jar \
+java  -cp ./JmxStoppableAgent.jar:/usr/lib/jvm/java-6-openjdk/tools.jar \
 -Djmx.agent.port=3434 \
 -Djmx.agent.stopper=secret \
--Djava.rmi.server.hostname=foo.com \
+-Djava.rmi.server.hostname=hbql.com \
 -Djavax.net.ssl.keyStore=./ssl/jmx-agent.jks \
 -Djavax.net.ssl.keyStorePassword=secret \
 -Djavax.net.ssl.trustStore=./ssl/jmx-agent.jks \

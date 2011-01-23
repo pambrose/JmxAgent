@@ -138,16 +138,7 @@ public class JmxAgent {
         // of the URL, in "rmi://"+hostname+":"+port
         //
         //System.out.println("Create an RMI connector server");
-
-        // See if java.rmi.server.hostname was used at startup
-        final String hostname;
-        if (System.getProperty(RMI_HOSTNAME) != null)
-            hostname = System.getProperty(RMI_HOSTNAME);
-        else
-            hostname = InetAddress.getLocalHost().getHostName();
-
-        final JMXServiceURL url = new JMXServiceURL("service:jmx:rmi://" + hostname +
-                                                    ":" + port + "/jndi/rmi://" + hostname + ":" + port + "/jmxrmi");
+        final JMXServiceURL url = new JMXServiceURL(getServiceUrl(InetAddress.getLocalHost().getHostName(), port));
 
         //System.out.println("Creating jmx proxy with URL: " + url);
 
@@ -161,8 +152,18 @@ public class JmxAgent {
         // Start the RMI connector server.
         System.out.println("RMI connector starting on port: " + port);
         cs.start();
-        System.out.println("Proxy started at: " + cs.getAddress());
+
+        final String hostname = System.getProperty(RMI_HOSTNAME) != null
+                                ? System.getProperty(RMI_HOSTNAME)
+                                : InetAddress.getLocalHost().getHostName();
+
+        System.out.println("Proxy started at: " + getServiceUrl(hostname, port));
+
         return cs;
+    }
+
+    public static String getServiceUrl(final String hostname, final int port) {
+        return "service:jmx:rmi://" + hostname + ":" + port + "/jndi/rmi://" + hostname + ":" + port + "/jmxrmi";
     }
 
     /**

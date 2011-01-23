@@ -51,18 +51,18 @@ java  -cp ./JmxStoppableAgent.jar \
 -Djavax.net.ssl.trustStorePassword=secret \
 com.sudothought.jmx.Attach status
 
-# To detach agent from running server
-java  -cp ./JmxStoppableAgent.jar \
--Djmx.agent.port=3434 \
--Djmx.agent.stopper=secret \
--Djavax.net.ssl.keyStore=./ssl/jmx-agent.jks \
--Djavax.net.ssl.keyStorePassword=secret \
--Djavax.net.ssl.trustStore=./ssl/jmx-agent.jks \
--Djavax.net.ssl.trustStorePassword=secret \
-com.sudothought.jmx.Attach stop PID
+To detach agent from running server
+    java  -cp ./JmxStoppableAgent.jar \
+        -Djmx.agent.port=3434 \
+        -Djmx.agent.stopper=secret \
+        -Djavax.net.ssl.keyStore=./ssl/jmx-agent.jks \
+        -Djavax.net.ssl.keyStorePassword=secret \
+        -Djavax.net.ssl.trustStore=./ssl/jmx-agent.jks \
+        -Djavax.net.ssl.trustStorePassword=secret \
+        com.sudothought.jmx.Attach stop PID
 
 
-# For client in both cases
+Connecting a client
 --------
 # To connect with test client
 java -cp ./JmxAgent.jar \

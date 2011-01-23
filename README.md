@@ -1,10 +1,10 @@
 JmxAgent
 ========
 
-Attaching an agent on server launch
+Attaching an non-stoppable agent on server launch
 --------
 
-To start test server:
+Start a test server:
 (The -Djava.rmi.server.hostname option is needed only with NAT)
     java -cp ./JmxAgent.jar \
         -javaagent:./JmxAgent.jar \
@@ -17,9 +17,9 @@ To start test server:
         com.sudothought.jmx.TestServer
 
 
-Attaching an agent to a running server
+Attaching a stoppable agent to a running server
 --------
-To start the test server
+Start a test server
     java -cp ./JmxStoppableAgent.jar \
         -Djava.rmi.server.hostname=foo.com \
         -Djavax.net.ssl.keyStore=./ssl/jmx-agent.jks \
@@ -28,10 +28,10 @@ To start the test server
         -Djavax.net.ssl.trustStorePassword=secret \
         com.sudothought.jmx.TestServer
 
-To get list of running VMs
+Get list of running JVMs
     java -cp ./JmxStoppableAgent.jar com.sudothought.jmx.Attach list
 
-To attach agent to running server
+Attach agent to running server
     java  -cp ./JmxStoppableAgent.jar:/usr/lib/jvm/java-6-sun/lib/tools.jar \
         -Djmx.agent.port=3434 \
         -Djmx.agent.stopper=secret \
@@ -41,7 +41,7 @@ To attach agent to running server
         -Djavax.net.ssl.trustStorePassword=secret \
         com.sudothought.jmx.Attach start PID
 
-To check status of attached agent
+Check status of attached agent
     java  -cp ./JmxStoppableAgent.jar \
         -Djmx.agent.port=3434 \
         -Djmx.agent.stopper=secret \
@@ -51,7 +51,7 @@ To check status of attached agent
         -Djavax.net.ssl.trustStorePassword=secret \
         com.sudothought.jmx.Attach status
 
-To detach agent from running server
+Detach agent from running server
     java  -cp ./JmxStoppableAgent.jar \
         -Djmx.agent.port=3434 \
         -Djmx.agent.stopper=secret \
@@ -64,14 +64,14 @@ To detach agent from running server
 
 Connecting a client
 --------
-To connect with test client
+Connect with a test client
     java -cp ./JmxAgent.jar \
         -Djavax.net.ssl.trustStore=./ssl/jmx-agent.jks \
         -Djavax.net.ssl.trustStorePassword=secret \
         com.sudothought.jmx.TestClient \
         -url=service:jmx:rmi://foo.com:3434/jndi/rmi://foo.com:3434/jmxrmi
 
-To connect with jconsole
+Connect with jconsole
     jconsole \
         -J-Djavax.net.ssl.trustStore=./ssl/jmx-agent.jks \
         -J-Djavax.net.ssl.trustStorePassword=secret \

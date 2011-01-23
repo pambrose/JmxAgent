@@ -21,11 +21,11 @@ public class TestClient {
         boolean useAgent = true;
 
         for (final String arg : args) {
-            if (arg.startsWith("-url:"))
-                jmxUrl = arg.replace("-url:", "");
+            if (arg.startsWith("-url="))
+                jmxUrl = arg.replace("-url=", "");
 
-            if (arg.startsWith("-useagent:"))
-                useAgent = Boolean.valueOf(arg.replace("-useagent:", ""));
+            if (arg.startsWith("-useagent="))
+                useAgent = Boolean.valueOf(arg.replace("-useagent=", ""));
         }
 
         if (jmxUrl == null) {

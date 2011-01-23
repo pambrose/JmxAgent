@@ -35,7 +35,7 @@ foo.com:3434
 
 # To start the test server
 java -cp ./JmxStoppableAgent.jar \
--Djava.rmi.server.hostname=hbql.com \
+-Djava.rmi.server.hostname=foo.com \
 -Djavax.net.ssl.keyStore=./ssl/jmx-agent.jks \
 -Djavax.net.ssl.keyStorePassword=secret \
 -Djavax.net.ssl.trustStore=./ssl/jmx-agent.jks \

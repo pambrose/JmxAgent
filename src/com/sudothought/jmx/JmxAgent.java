@@ -58,6 +58,7 @@ import java.util.HashMap;
  */
 public class JmxAgent {
 
+    public static final String RMI_HOSTNAME  = "java.rmi.server.hostname";
     public static final String PORT_PROPERTY = "jmx.agent.port";
     public static final String DEFAULT_PORT  = "3412";
 
@@ -137,7 +138,14 @@ public class JmxAgent {
         // of the URL, in "rmi://"+hostname+":"+port
         //
         //System.out.println("Create an RMI connector server");
-        final String hostname = InetAddress.getLocalHost().getHostName();
+
+        // See if java.rmi.server.hostname was used at startup
+        final String hostname;
+        if (System.getProperty(RMI_HOSTNAME) != null)
+            hostname = System.getProperty(RMI_HOSTNAME);
+        else
+            hostname = InetAddress.getLocalHost().getHostName();
+
         final JMXServiceURL url = new JMXServiceURL("service:jmx:rmi://" + hostname +
                                                     ":" + port + "/jndi/rmi://" + hostname + ":" + port + "/jmxrmi");
 

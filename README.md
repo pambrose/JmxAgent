@@ -89,4 +89,4 @@ http://blogs.sun.com/jmxetc/entry/troubleshooting_connection_problems_in_jconsol
 http://blogs.sun.com/jmxetc/entry/building_a_remotely_stoppable_connector
 http://www.bserban.org/2009/10/creating-a-secure-jmx-agent-in-jdk-1-5/
 
-** All credit goes to Daniel Fuchs for this code.
+** All credit goes to Daniel Fuchs (http://blogs.sun.com/jmxetc/page/About) for this code.

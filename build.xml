@@ -27,8 +27,8 @@
     <target name="build-jar2">
         <jar basedir="${output.dir}" jarfile="${jar2file}">
             <manifest>
-                <attribute name="Premain-Class" value="com.sudothought.jmx.StoppableAgent"/>
-                <attribute name="Agent-Class" value="com.sudothought.jmx.StoppableAgent"/>
+                <attribute name="Premain-Class" value="com.sudothought.jmx.JmxStoppableAgent"/>
+                <attribute name="Agent-Class" value="com.sudothought.jmx.JmxStoppableAgent"/>
             </manifest>
         </jar>
     </target>

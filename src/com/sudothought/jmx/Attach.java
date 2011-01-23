@@ -76,14 +76,10 @@ public class Attach {
      * @throws java.net.UnknownHostException
      * @throws java.net.MalformedURLException
      */
-    public static JMXServiceURL getUrlForClient()
-            throws UnknownHostException, MalformedURLException {
+    public static JMXServiceURL getUrlForClient() throws UnknownHostException, MalformedURLException {
         final String hostname = InetAddress.getLocalHost().getHostName();
-        final int port = StoppableAgent.getServerPort();
-        JMXServiceURL url =
-                new JMXServiceURL("service:jmx:rmi:///jndi/rmi://" +
-                                  hostname + ":" + port + "/jmxrmi");
-        return url;
+        final int port = JmxAgent.getServerPort();
+        return new JMXServiceURL("service:jmx:rmi:///jndi/rmi://" + hostname + ":" + port + "/jmxrmi");
     }
 
     /**
@@ -103,8 +99,10 @@ public class Attach {
     }
 
     final static String[] SSL_PROPERTIES = {
-            "javax.net.ssl.keyStore", "javax.net.ssl.keyStorePassword",
-            "javax.net.ssl.trustStore", "javax.net.ssl.trustStorePassword"
+            "javax.net.ssl.keyStore",
+            "javax.net.ssl.keyStorePassword",
+            "javax.net.ssl.trustStore",
+            "javax.net.ssl.trustStorePassword"
     };
 
 
@@ -117,13 +115,12 @@ public class Attach {
     public static String getAgentArgs() {
         final StringBuilder builder = new StringBuilder();
         builder.append(Stopper.STOPPER_PROPERTY).append("=");
-        builder.append(System.getProperty(Stopper.STOPPER_PROPERTY,
-                                          Stopper.STOPPER_NAME));
+        builder.append(System.getProperty(Stopper.STOPPER_PROPERTY, Stopper.STOPPER_NAME));
         builder.append(";");
-        builder.append(StoppableAgent.PORT_PROPERTY).append("=");
-        builder.append(System.getProperty(StoppableAgent.PORT_PROPERTY,
-                                          StoppableAgent.DEFAULT_PORT));
+        builder.append(JmxAgent.PORT_PROPERTY).append("=");
+        builder.append(System.getProperty(JmxAgent.PORT_PROPERTY, JmxAgent.DEFAULT_PORT));
         final String sendssl = System.getProperty(SEND_SSL_PROPERTIES, "false");
+
         if (Boolean.valueOf(sendssl).booleanValue()) {
             // send keystore etc... to attached process... This is
             // usually not a good idea...
@@ -133,6 +130,7 @@ public class Attach {
                     builder.append(";").append(s).append("=").append(v);
             }
         }
+
         return builder.toString();
     }
 
@@ -141,13 +139,15 @@ public class Attach {
      *
      * @return running process list.
      */
-    public static List<String> list() {
-        final List<String> vmlist = new ArrayList<String>();
-        for (VirtualMachineDescriptor vd : VirtualMachine.list()) {
-            vmlist.add(vd.id());
-        }
-        System.out.println("Running VMs are: " + vmlist);
-        return vmlist;
+    public static void list() {
+
+        final List<VirtualMachineDescriptor> vmlist = new ArrayList<VirtualMachineDescriptor>();
+        for (VirtualMachineDescriptor vd : VirtualMachine.list())
+            vmlist.add(vd);
+
+        System.out.printf("PIDs of running VMs are: \n");
+        for (final VirtualMachineDescriptor vmd : vmlist)
+            System.out.printf("%s \t- %s \n", vmd.id(), vmd.displayName());
     }
 
 
@@ -176,9 +176,7 @@ public class Attach {
             throw new IllegalArgumentException(pid, x);
         }
 
-        final URL agent =
-                StoppableAgent.class.getProtectionDomain().
-                        getCodeSource().getLocation();
+        final URL agent = JmxStoppableAgent.class.getProtectionDomain().getCodeSource().getLocation();
         System.out.println("loading " + agent.getFile());
         vm.loadAgent(agent.getFile(), getAgentArgs());
 
@@ -206,7 +204,7 @@ public class Attach {
         final JMXConnector c = connect(url);
         try {
             Stopper.stopServer(c);
-            System.out.println("Server stopped");
+            System.out.println("Agent stopped");
         }
         finally {
             c.close();
@@ -249,29 +247,35 @@ public class Attach {
      * @param args
      * @throws java.lang.Exception
      */
-    public static void main(String args[])
-            throws Exception {
-        if (args.length < 1) syntaxError(args, 0);
+    public static void main(String args[]) throws Exception {
+
+        if (args.length < 1)
+            syntaxError(args, 0);
 
         if ("start".equals(args[0]) && args.length != 2)
             syntaxError(args, 1);
+
         if ("start".equals(args[0])) {
             JMXServiceURL url = start(args[1]);
             System.out.println("Server started at: " + url);
             return;
         }
+
         if ("stop".equals(args[0])) {
             stop();
             return;
         }
+
         if ("list".equals(args[0])) {
             list();
             return;
         }
+
         if ("help".equals(args[0])) {
             help();
             return;
         }
+
         if ("status".equals(args[0])) {
             final JMXServiceURL url = getUrlForClient();
             try {

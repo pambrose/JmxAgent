@@ -107,8 +107,7 @@ public class Stopper {
 
             @Override
             public Object intercept(MBeanServer server, ObjectName mbean,
-                                    String invoke, Object[] args, String[] signature)
-                    throws Exception {
+                                    String invoke, Object[] args, String[] signature) throws Exception {
 
                 // stop the connector.
                 //
@@ -119,13 +118,12 @@ public class Stopper {
                 //
                 if (registry != null)
                     UnicastRemoteObject.unexportObject(registry, false);
-                System.out.println("Server stopped");
+                System.out.println("Agent stopped");
                 return null;
             }
 
             @Override
-            public ClassLoader getClassLoaderFor(MBeanServer server,
-                                                 ObjectName mbean) {
+            public ClassLoader getClassLoaderFor(MBeanServer server, ObjectName mbean) {
                 return null;
             }
         };
@@ -139,8 +137,7 @@ public class Stopper {
      *         the {@code example.rmi.agent.stopper} system property. if any.
      */
     public static ObjectName getDefaultStopperName() {
-        final String stopperName =
-                System.getProperty(STOPPER_PROPERTY, STOPPER_NAME);
+        final String stopperName = System.getProperty(STOPPER_PROPERTY, STOPPER_NAME);
         try {
             return ObjectName.getInstance("JMImplementation:type=JMXConnectorStopper,name=" + stopperName);
         }
@@ -159,8 +156,7 @@ public class Stopper {
     public static void stopServer(JMXConnector c)
             throws IOException {
         try {
-            c.getMBeanServerConnection().invoke(getDefaultStopperName(),
-                                                STOP, null, null);
+            c.getMBeanServerConnection().invoke(getDefaultStopperName(), STOP, null, null);
         }
         catch (JMException x) {
             throw new IOException("can't stop server: " + x, x);

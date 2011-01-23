@@ -47,6 +47,7 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.HashMap;
 
 /**
@@ -57,20 +58,35 @@ import java.util.HashMap;
  */
 public class JmxAgent {
 
+    public static final String PORT_PROPERTY = "jmx.agent.port";
+    public static final String DEFAULT_PORT  = "3412";
+
+
     private JmxAgent() {
     }
 
+    public static int getServerPort() {
+        return Integer.parseInt(System.getProperty(PORT_PROPERTY, DEFAULT_PORT));
+    }
+
     public static void premain(String agentArgs) throws IOException {
+
+        final JMXConnectorServer cs = startAgent(agentArgs, false);
+
+        // Start the CleanThread daemon...
+        final Thread clean = new CleanThread(cs);
+        clean.start();
+    }
+
+    public static JMXConnectorServer startAgent(String agentArgs, final boolean createForwarder) throws IOException {
 
         // Ensure cryptographically strong random number generator used
         // to choose the object number - see java.rmi.server.ObjID
         System.setProperty("java.rmi.server.randomIDs", "true");
 
         // Start an RMI registry on port specified by example.rmi.agent.port
-        // (default 3000).
-        //
-        final int port = Integer.parseInt(System.getProperty("jmx.agent.port", "3412"));
-        //System.out.println("Create RMI registry on port " + port);
+        final int port = getServerPort();
+        System.out.println("Create RMI registry on port " + port);
 
         // We create a couple of SslRMIClientSocketFactory and
         // SslRMIServerSocketFactory. We will use the same factories to export
@@ -89,7 +105,7 @@ public class JmxAgent {
         // RMI Connector server, we must also use them in the RMI Registry.
         // Otherwise, we wouldn't be able to use a single port.
         //
-        LocateRegistry.createRegistry(port, csf, ssf);
+        final Registry registry = LocateRegistry.createRegistry(port, csf, ssf);
 
         // Retrieve the PlatformMBeanServer.
         //
@@ -128,17 +144,17 @@ public class JmxAgent {
         //System.out.println("Creating jmx proxy with URL: " + url);
 
         // Now create the server from the JMXServiceURL
-        //
         final JMXConnectorServer cs = JMXConnectorServerFactory.newJMXConnectorServer(url, env, mbs);
+        if (createForwarder) {
+            cs.setMBeanServerForwarder(Stopper.createForwarderFor(cs, registry));
+            System.out.println("Stopper ready for: " + Stopper.getDefaultStopperName());
+        }
 
         // Start the RMI connector server.
         System.out.println("RMI connector starting on port: " + port);
         cs.start();
         System.out.println("Proxy started at: " + cs.getAddress());
-
-        // Start the CleanThread daemon...
-        final Thread clean = new CleanThread(cs);
-        clean.start();
+        return cs;
     }
 
     /**

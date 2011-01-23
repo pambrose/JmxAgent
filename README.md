@@ -29,10 +29,11 @@ Start a test server
         com.sudothought.jmx.TestServer
 
 Get list of running JVMs
-    java -cp ./JmxStoppableAgent.jar com.sudothought.jmx.Attach list
+    java -cp ./JmxStoppableAgent.jar:${JAVA_HOME}/lib/tools.jar \
+        com.sudothought.jmx.Attach list
 
 Attach agent to running server
-    java  -cp ./JmxStoppableAgent.jar:/usr/lib/jvm/java-6-sun/lib/tools.jar \
+    java  -cp ./JmxStoppableAgent.jar:${JAVA_HOME}/lib/tools.jar \
         -Djmx.agent.port=3434 \
         -Djmx.agent.stopper=secret \
         -Djavax.net.ssl.keyStore=./ssl/jmx-agent.jks \
@@ -42,7 +43,7 @@ Attach agent to running server
         com.sudothought.jmx.Attach start PID
 
 Check status of attached agent
-    java  -cp ./JmxStoppableAgent.jar \
+    java  -cp ./JmxStoppableAgent.jar:${JAVA_HOME}lib//tools.jar \
         -Djmx.agent.port=3434 \
         -Djmx.agent.stopper=secret \
         -Djavax.net.ssl.keyStore=./ssl/jmx-agent.jks \
@@ -52,7 +53,7 @@ Check status of attached agent
         com.sudothought.jmx.Attach status
 
 Detach agent from running server
-    java  -cp ./JmxStoppableAgent.jar \
+    java  -cp ./JmxStoppableAgent.jar:${JAVA_HOME}/lib/tools.jar \
         -Djmx.agent.port=3434 \
         -Djmx.agent.stopper=secret \
         -Djavax.net.ssl.keyStore=./ssl/jmx-agent.jks \

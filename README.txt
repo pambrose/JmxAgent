@@ -35,6 +35,7 @@ foo.com:3434
 
 # To start the test server
 java -cp ./JmxStoppableAgent.jar \
+-Djava.rmi.server.hostname=hbql.com \
 -Djavax.net.ssl.keyStore=./ssl/jmx-agent.jks \
 -Djavax.net.ssl.keyStorePassword=secret \
 -Djavax.net.ssl.trustStore=./ssl/jmx-agent.jks \
@@ -42,10 +43,9 @@ java -cp ./JmxStoppableAgent.jar \
 com.sudothought.jmx.TestServer
 
 # To attach
-java  -cp ./JmxStoppableAgent.jar:/usr/lib/jvm/java-6-openjdk/tools.jar \
+java  -cp ./JmxStoppableAgent.jar:/usr/lib/jvm/java-6-sun/lib/tools.jar \
 -Djmx.agent.port=3434 \
 -Djmx.agent.stopper=secret \
--Djava.rmi.server.hostname=hbql.com \
 -Djavax.net.ssl.keyStore=./ssl/jmx-agent.jks \
 -Djavax.net.ssl.keyStorePassword=secret \
 -Djavax.net.ssl.trustStore=./ssl/jmx-agent.jks \

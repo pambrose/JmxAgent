@@ -90,11 +90,9 @@ public class ForwardingInterceptor implements InvocationHandler {
     private volatile MBeanServer server = null;
     private final List<InvokeOperationInterceptor> interceptedCalls;
 
-    public ForwardingInterceptor(MBeanServer server,
-                                 InvokeOperationInterceptor... intercepted) {
+    public ForwardingInterceptor(MBeanServer server, InvokeOperationInterceptor... intercepted) {
         this.server = server;
-        this.interceptedCalls =
-                new CopyOnWriteArrayList<InvokeOperationInterceptor>();
+        this.interceptedCalls = new CopyOnWriteArrayList<InvokeOperationInterceptor>();
         this.interceptedCalls.addAll(Arrays.asList(intercepted));
     }
 
@@ -121,14 +119,11 @@ public class ForwardingInterceptor implements InvocationHandler {
         throw new IllegalArgumentException(method.getName());
     }
 
-    private Object intercept(InvokeOperationInterceptor c,
-                             Method method, Object on, Object[] args) throws Throwable {
-        return c.intercept(server, (ObjectName)args[0], (String)args[1],
-                           (Object[])args[2], (String[])args[3]);
+    private Object intercept(InvokeOperationInterceptor c, Method method, Object on, Object[] args) throws Throwable {
+        return c.intercept(server, (ObjectName)args[0], (String)args[1], (Object[])args[2], (String[])args[3]);
     }
 
-    private Object invokeOnServer(Object proxy, Method method,
-                                  Object[] args) throws Throwable {
+    private Object invokeOnServer(Object proxy, Method method, Object[] args) throws Throwable {
         try {
             if (method.equals(Methods.invokeMethod)) {
                 for (InvokeOperationInterceptor c : interceptedCalls) {
@@ -150,8 +145,7 @@ public class ForwardingInterceptor implements InvocationHandler {
         }
     }
 
-    private Object invokeOnThis(Object proxy, Method method,
-                                Object[] args) throws Throwable {
+    private Object invokeOnThis(Object proxy, Method method, Object[] args) throws Throwable {
         if (Methods.setMBeanServerMethod.equals(method)) {
             setMBeanServer((MBeanServer)args[0]);
             return null;
@@ -176,8 +170,7 @@ public class ForwardingInterceptor implements InvocationHandler {
         return server;
     }
 
-    private boolean isIntercepting(InvokeOperationInterceptor c, Method method,
-                                   Object[] args) {
+    private boolean isIntercepting(InvokeOperationInterceptor c, Method method, Object[] args) {
         if (!method.equals(Methods.invokeMethod)) return false;
         if (!c.matches((ObjectName)args[0])) return false;
         if (!c.matches((String)args[1])) return false;

@@ -127,6 +127,7 @@ public class Stopper {
                 return null;
             }
         };
+
         return ForwardingInterceptor.newForwardingInterceptor(interceptor);
     }
 

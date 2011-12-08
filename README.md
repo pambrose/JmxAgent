@@ -1,7 +1,7 @@
 JmxAgent
 ========
 
-Attaching an non-stoppable agent on server launch
+Attaching a non-stoppable agent on server launch
 --------
 
 Start a test server:
